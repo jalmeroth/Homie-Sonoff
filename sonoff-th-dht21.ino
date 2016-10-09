@@ -14,7 +14,7 @@ HomieNode switchNode("switch", "switch");
 HomieNode temperatureNode("temperature", "temperature");
 
 #define FW_NAME "sonoff-th-dht21"
-#define FW_VERSION "1.0.1"
+#define FW_VERSION "1.0.2"
 
 /* Magic sequence for Autodetectable Binary Upload */
 const char *__FLAGGED_FW_NAME = "\xbf\x84\xe4\x13\x54" FW_NAME "\x93\x44\x6b\xa7\x75";
@@ -30,13 +30,13 @@ unsigned long debounceDelay = 50;    // the debounce time; increase if the outpu
 bool switchOnHandler(String value) {
   if (value == "true") {
     digitalWrite(PIN_RELAY, HIGH);
-    Homie.setNodeProperty(switchNode, "on", "true");
+    Homie.setNodeProperty(switchNode, "on", "true", true);
     relayState = HIGH;
     Serial.println("Switch is on");
   } else if (value == "false") {
     digitalWrite(PIN_RELAY, LOW);
+    Homie.setNodeProperty(switchNode, "on", "false", true);
     relayState = LOW;
-    Homie.setNodeProperty(switchNode, "on", "false");
     Serial.println("Switch is off");
   } else {
     return false;
