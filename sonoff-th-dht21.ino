@@ -14,7 +14,7 @@ HomieNode switchNode("switch", "switch");
 HomieNode temperatureNode("temperature", "temperature");
 
 #define FW_NAME "sonoff-th-dht21"
-#define FW_VERSION "1.0.0"
+#define FW_VERSION "1.0.1"
 
 /* Magic sequence for Autodetectable Binary Upload */
 const char *__FLAGGED_FW_NAME = "\xbf\x84\xe4\x13\x54" FW_NAME "\x93\x44\x6b\xa7\x75";
@@ -42,6 +42,11 @@ bool switchOnHandler(String value) {
     return false;
   }
   return true;
+}
+
+void setupHandler() {
+  // publish current relayState when online
+  Homie.setNodeProperty(switchNode, "on", (relayState == HIGH) ? "true" : "false", true);
 }
 
 void loopHandler() {
@@ -72,6 +77,7 @@ void setup() {
   Homie.registerNode(switchNode);
   Homie.registerNode(temperatureNode);
   switchNode.subscribe("on", switchOnHandler);
+  Homie.setSetupFunction(setupHandler);
   Homie.setLoopFunction(loopHandler);
   Homie.setup();
 }
